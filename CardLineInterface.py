@@ -99,7 +99,8 @@ class blackjack:
         # \033 is the escape character (ASCII code 27 in octal).
         # [2J clears the entire screen.
         # [H moves the cursor to the top-left corner.
-        print("\033[2J\033[H")
+        # print("\033[2J\033[H")
+        os.system('cls' if os.name == 'nt' else 'clear')
 
         print('\n')
         print('Dealers Hand:\n')
@@ -205,17 +206,27 @@ class blackjack:
             self.dealer_hand_score =  self.dealer_hand_score + score
 
     def dealer_logic(self, dealer_score, player_score, deck):
+
+
+        if player_score > 21:
+            return
         
 
         if dealer_score == 15:
             self.deal_hand('dealer', 1, deck=self.deck)
             self.dealer_hand_score = 0
             self.score_hand('dealer', self.dealer_hand)
+            dealer_score = self.dealer_hand_score
+            
 
-        if dealer_score < player_score and dealer_score < 21:
+        finite = 2
+        i = 0
+        while dealer_score < player_score and dealer_score <= 21 and i < finite:
             self.deal_hand('dealer', 1, deck=self.deck)
             self.dealer_hand_score = 0
             self.score_hand('dealer', self.dealer_hand)
+            dealer_score = self.dealer_hand_score
+            i = i + 1
 
         # finite = 3
         # i = 0
@@ -260,7 +271,7 @@ if __name__ == "__main__":
     elif mode == 'poker':
         print("Under construction")
 
-    else:
-        print(mode)
-        print(args)
+    # else:
+    #     print(mode)
+    #     print(args)
 
