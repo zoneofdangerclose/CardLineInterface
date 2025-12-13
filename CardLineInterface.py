@@ -63,7 +63,9 @@ class blackjack:
 
         chipcount = bank_instance.bank_df.loc[bank_instance.bank_df['username'] == username, 'blackjack chip count'][0]
         bet = 10
-
+        
+        os.system('cls' if os.name == 'nt' else 'clear')
+        game.header_print()
         # print(len(self.deck))
         print('\n')
         print('Dealers Hand:\n')
@@ -77,23 +79,27 @@ class blackjack:
         print('Your Hand:\n')
         game.deal_hand('player', 2, deck=game.deck)
         print(game.player_hand)
+
+        print('\n')
+
         print(f'Chip Count\n{chipcount}')
         print(f'Bet\n{bet}')
 
         hit = input("Hit? (y/n) ")
-
-        if hit == "y":
-            print('hit')
+        finite = 3
+        i = 0
+        while hit == "y" and i < finite:
+            # print('hit')
+            i = i + 1
             game.deal_hand('player', 1, deck=game.deck)
-            # print(game.player_hand)
+            print(game.player_hand)
+            hit = input("Hit? (y/n) ")
+            
 
         game.score_hand('player', game.player_hand)
         game.score_hand('dealer', game.dealer_hand)
 
         game.dealer_logic(dealer_score = game.dealer_hand_score, player_score =game.player_hand_score, deck=game.deck)
-
-        # game.dealer_hand_score = 0
-        # game.score_hand('dealer', game.dealer_hand)
 
 
         # \033 is the escape character (ASCII code 27 in octal).
@@ -101,6 +107,8 @@ class blackjack:
         # [H moves the cursor to the top-left corner.
         # print("\033[2J\033[H")
         os.system('cls' if os.name == 'nt' else 'clear')
+
+        game.header_print()
 
         print('\n')
         print('Dealers Hand:\n')
@@ -112,8 +120,6 @@ class blackjack:
         print(game.player_hand)
         print(game.player_hand_score)
 
-        # print(game.player_hand_score)
-        # print(game.dealer_hand_score)
         playerwins = False
         playerdraw = False
         if game.dealer_hand_score > 21 and game.player_hand_score <=21:
@@ -143,7 +149,6 @@ class blackjack:
         else:
             chipcount = chipcount - bet
 
-        # print(chipcount)
 
         bank_instance.updatechipcount(chipcount, username, game = 'blackjack', bank_df= bank_instance.bank_df)
 
@@ -219,7 +224,7 @@ class blackjack:
             dealer_score = self.dealer_hand_score
             
 
-        finite = 2
+        finite = 5
         i = 0
         while dealer_score < player_score and dealer_score <= 21 and i < finite:
             self.deal_hand('dealer', 1, deck=self.deck)
@@ -228,17 +233,13 @@ class blackjack:
             dealer_score = self.dealer_hand_score
             i = i + 1
 
-        # finite = 3
-        # i = 0
-        # while dealer_score < 21 or dealer_score < player_score or i < finite:
-        #     self.dealer_hand_score = 0
-        #     self.deal_hand('dealer', 1, deck=self.deck)
-        #     self.score_hand('dealer', self.dealer_hand)
-        #     i += 1
 
+    def header_print(self):
+        print("*♣♣♣♣ ♦♦♦♦ ♥♥♥♥ ♠♠♠♠*")
+        print("Casino: Blackjack")
+        print("Dealer hits on 15")
+        print("*♣♣♣♣ ♦♦♦♦ ♥♥♥♥ ♠♠♠♠*")
 
-
-# blackjack().deal_hand()
 
 
 if __name__ == "__main__":
@@ -271,7 +272,5 @@ if __name__ == "__main__":
     elif mode == 'poker':
         print("Under construction")
 
-    # else:
-    #     print(mode)
-    #     print(args)
+
 
