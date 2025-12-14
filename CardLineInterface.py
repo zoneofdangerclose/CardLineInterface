@@ -4,12 +4,20 @@ from thefuzz import process
 import copy
 import os
 import pandas as pd
+import logging
+logger = logging.getLogger(__name__)
+from datetime import date
 
 class bank:
+    """Generates and maintains a file that tracks players chip count.
+
+    TODO:
+    Current iteration only has a guest username, but has some infrastructure for multiple profiles.
+    """
     def __init__(self):
         self.bank_df = pd.DataFrame()
-        pass
 
+        
     def start_game(self):
         if os.path.exists('bank.csv') is False:
             print('construcing bank')
@@ -33,8 +41,8 @@ class bank:
 
 
 class blackjack:
-
     def __init__(self):
+        """Initalize empty containers and standard values based on the game mode."""
         self.player_hand = []
         self.dealer_hand = []
         # self.chip_count = []
@@ -54,7 +62,30 @@ class blackjack:
 
         self.deck = ['A♣', '2♣', '3♣', '4♣', '5♣', '6♣', '7♣', '8♣', '9♣', 'T♣', 'J♣', 'Q♣', 'K♣', 'A♦', '2♦', '3♦', '4♦', '5♦', '6♦', '7♦', '8♦', '9♦', 'T♦', 'J♦', 'Q♦', 'K♦', 'A♥', '2♥', '3♥', '4♥', '5♥', '6♥', '7♥', '8♥', '9♥', 'T♥', 'J♥', 'Q♥', 'K♥', 'A♠', '2♠', '3♠', '4♠', '5♠', '6♠', '7♠', '8♠', '9♠', 'T♠', 'J♠', 'Q♠', 'K♠']
 
+        self.metadata = {
+            'player_hand':self.player_hand,
+            'dealer_hand':self.dealer_hand,
+            'player_hand_score':self.player_hand_score,
+            'dealer_hand_score':self.dealer_hand_score
+        }
+    
+    def metadata_update(self, update_key, update_value):
+        """"Utility function that updates key values for logging."""
+        keys = self.metadata.keys()
+        if update_key in keys:
+            self.metadata.update({update_key:update_value})
+        else:
+            self.metadata.add({update_key:update_value})
+
     def game_state(self):
+        """Main game loop that generates an instance of the game.
+        
+        Hardcoded values:
+        username - Set to 'guest', multiple profiles in future implmentation.
+        bet - Set to 10, number of chips to wager should be dynamic in future, different levels/tables i.e. high roller, bigger bets?
+        finite - Used in while loops to prevent run away edgecases as per rule 2 in The Power of 10: Rules for Developing Safety-Critical Code.
+        i - Iteration counter.
+        """
         game = blackjack()
         bank_instance = bank()
         bank_instance.start_game()
@@ -69,7 +100,8 @@ class blackjack:
         # print(len(self.deck))
         print('\n')
         print('Dealers Hand:\n')
-        game.deal_hand('dealer', 2, deck=game.deck)
+        game.deal_hand('dealer', 2)
+        game.metadata_update('dealer_hand',game.dealer_hand)
         dealer_hand_shown = copy.copy(game.dealer_hand)
         dealer_hand_shown[1] = "??"
         print(dealer_hand_shown)
@@ -77,7 +109,8 @@ class blackjack:
         print('\n')
         
         print('Your Hand:\n')
-        game.deal_hand('player', 2, deck=game.deck)
+        game.deal_hand('player', 2)
+        game.metadata_update('player_hand',game.player_hand)
         print(game.player_hand)
 
         print('\n')
@@ -86,21 +119,27 @@ class blackjack:
         print(f'Bet\n{bet}')
 
         hit = input("Hit? (y/n) ")
-        finite = 3
+        finite = 5
         i = 0
         while hit == "y" and i < finite:
             # print('hit')
             i = i + 1
-            game.deal_hand('player', 1, deck=game.deck)
+            game.deal_hand('player', 1)
+            game.metadata_update('player_hand',game.player_hand)
             print(game.player_hand)
             hit = input("Hit? (y/n) ")
             
-
+        if i >= finite:
+            logger.info(f'Player max handsize reached')
+            
         game.score_hand('player', game.player_hand)
+        game.metadata_update('player_hand_score',game.player_hand_score)
         game.score_hand('dealer', game.dealer_hand)
+        game.metadata_update('dealer_hand_score',game.dealer_hand_score)
 
-        game.dealer_logic(dealer_score = game.dealer_hand_score, player_score =game.player_hand_score, deck=game.deck)
-
+        game.dealer_logic(dealer_score = game.dealer_hand_score, player_score =game.player_hand_score)
+        game.metadata_update('dealer_hand',game.dealer_hand)
+        game.metadata_update('dealer_hand_score',game.dealer_hand_score)
 
         # \033 is the escape character (ASCII code 27 in octal).
         # [2J clears the entire screen.
@@ -152,41 +191,32 @@ class blackjack:
 
         bank_instance.updatechipcount(chipcount, username, game = 'blackjack', bank_df= bank_instance.bank_df)
 
+        logger.info(game.metadata)
 
 
-    def deal_hand(self, actor, numcards, deck):
+
+    def deal_hand(self, actor, numcards):
+        """Draws card from instance of game deck and inserts into actors hand, removing that card from being drawn in future."""
         for card in range(numcards):
-            # rand_temp = random.randint(0,len(self.deck))
-            # try:
-            # card_temp = self.deck.pop(rand_temp)
-            # except:
-                # rand_temp = random.randint(0,len(self.deck))
-                # card_temp = self.deck.pop(rand_temp)
             card_temp = random.choice(self.deck)
             index_temp = self.deck.index(card_temp)
             if index_temp in range(len(self.deck)):
-                # print(self.deck)
-                # print(len(self.deck))
-                # print(range(len(self.deck)))
-                # print(index_temp)
-                # print(card_temp)
                 self.deck.remove(card_temp)
-                # print(len(self.deck))
             else:
                 print(card_temp)
                 print(self.deck.index(card_temp))
-            # self.deck = self.deck - card_temp
-            # self.deck = list(self.deck)
-            # self.deck.remove(card_temp)
 
             if actor == 'player':
                 self.player_hand.append(card_temp)
             elif actor == 'dealer':
                 self.dealer_hand.append(card_temp)
-        # print(self.player_hand)
-        # return self
+ 
 
     def score_hand(self, actor, hand):
+        """"Adds up value of cards in hand and adds value to named actor.
+        Accounts of face cards having a value of 10.
+        Accounts for Aces having a value of 11 or 1.
+        """
         score = 0
         ace_in_hand = False
         for card in range(len(hand)):
@@ -210,15 +240,22 @@ class blackjack:
         elif actor == 'dealer':
             self.dealer_hand_score =  self.dealer_hand_score + score
 
-    def dealer_logic(self, dealer_score, player_score, deck):
+    def dealer_logic(self, dealer_score, player_score):
+        """Simple dealer AI to draw cards until conditions are met and returns hand.
+        Has common a USA Las Vegas convention, hit at 15 no matter player hand value.
 
+        Hardcoded values:
+        finite - Used in while loops to prevent run away edgecases as per rule 2 in The Power of 10: Rules for Developing Safety-Critical Code.
+        i - Iteration counter.
+        """
 
         if player_score > 21:
             return
-        
+    
 
         if dealer_score == 15:
-            self.deal_hand('dealer', 1, deck=self.deck)
+            logger.info(f'Dealer score 15')
+            self.deal_hand('dealer', 1)
             self.dealer_hand_score = 0
             self.score_hand('dealer', self.dealer_hand)
             dealer_score = self.dealer_hand_score
@@ -227,14 +264,18 @@ class blackjack:
         finite = 5
         i = 0
         while dealer_score < player_score and dealer_score <= 21 and i < finite:
-            self.deal_hand('dealer', 1, deck=self.deck)
+            self.deal_hand('dealer', 1)
             self.dealer_hand_score = 0
             self.score_hand('dealer', self.dealer_hand)
             dealer_score = self.dealer_hand_score
             i = i + 1
+        
+        if i >= finite:
+            logger.info(f'Dealer max handsize reached')
 
 
     def header_print(self):
+        """Pretty header to display at top of screen."""
         print("*♣♣♣♣ ♦♦♦♦ ♥♥♥♥ ♠♠♠♠*")
         print("Casino: Blackjack")
         print("Dealer hits on 15")
@@ -243,6 +284,7 @@ class blackjack:
 
 
 if __name__ == "__main__":
+    """Command line argument parser and logic to steer users to the right place."""
     parser = argparse.ArgumentParser(description="Select blackjack")
 
 
@@ -257,6 +299,8 @@ if __name__ == "__main__":
 
     if args.game in gamemodes:
         mode = args.game
+    if args.game is None:
+        print(f'Game options are {gamemodes}')
     else:
         fuzzfind = process.extract(args.game, choices= gamemodes, limit=1)
         game_maybe = fuzzfind[0][0]
@@ -266,11 +310,21 @@ if __name__ == "__main__":
         else:
             print(f'Game options are {gamemodes}')
 
+    today = str(date.today())
+    logging.basicConfig(filename=f'{today}.log', level=logging.INFO)
+    logger.info(f'Started {mode}')
 
     if mode == 'blackjack':
-        blackjack().game_state()
+        try:
+            blackjack().game_state()
+        except Exception as e:
+            print(f'Casino is closed due to: \n {type(e).__name__} \n we apologize for any inconvenience')
+            logger.exception(e)
+
     elif mode == 'poker':
         print("Under construction")
+
+
 
 
 
