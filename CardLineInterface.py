@@ -193,6 +193,18 @@ class blackjack:
 
         logger.info(game.metadata)
 
+        play_again = input("Play another round? (y/n) ")
+
+        if play_again == "y":
+            try:
+                blackjack().game_state()
+            except Exception as e:
+                print(f'Casino is closed due to: \n {type(e).__name__} \n we apologize for any inconvenience')
+                logger.exception(e)
+        else:
+            print("See you around partner!")
+
+
 
 
     def deal_hand(self, actor, numcards):
@@ -320,6 +332,8 @@ if __name__ == "__main__":
         except Exception as e:
             print(f'Casino is closed due to: \n {type(e).__name__} \n we apologize for any inconvenience')
             logger.exception(e)
+
+        
 
     elif mode == 'poker':
         print("Under construction")

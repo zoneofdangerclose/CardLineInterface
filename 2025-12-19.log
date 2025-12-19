@@ -1,0 +1,9 @@
+INFO:__main__:Started blackjack
+INFO:__main__:{'player_hand': ['J\u2663', '9\u2665'], 'dealer_hand': ['A\u2665', '5\u2665', '6\u2663', '7\u2663'], 'player_hand_score': 19, 'dealer_hand_score': 19}
+INFO:__main__:{'player_hand': ['7\u2666', 'J\u2665'], 'dealer_hand': ['J\u2666', '2\u2666', '6\u2666'], 'player_hand_score': 17, 'dealer_hand_score': 18}
+INFO:__main__:Dealer score 15
+INFO:__main__:{'player_hand': ['8\u2665', 'A\u2660'], 'dealer_hand': ['5\u2666', 'T\u2666', 'J\u2660'], 'player_hand_score': 19, 'dealer_hand_score': 25}
+INFO:__main__:Dealer score 15
+INFO:__main__:{'player_hand': ['A\u2663', 'J\u2660'], 'dealer_hand': ['8\u2666', '7\u2666', '3\u2660', 'T\u2660'], 'player_hand_score': 21, 'dealer_hand_score': 28}
+INFO:__main__:Started blackjack
+INFO:__main__:{'player_hand': ['5\u2660', 'A\u2665', '3\u2666'], 'dealer_hand': ['K\u2665', 'J\u2660'], 'player_hand_score': 19, 'dealer_hand_score': 20}
