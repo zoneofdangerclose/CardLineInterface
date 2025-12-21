@@ -1,0 +1,72 @@
+INFO:__main__:Started blackjack
+INFO:__main__:{'player_hand': ['4\u2663', '2\u2663', '8\u2660', '9\u2665'], 'dealer_hand': ['T\u2660', 'K\u2665'], 'player_hand_score': 23, 'dealer_hand_score': 20}
+INFO:__main__:{'player_hand': ['8\u2665', '9\u2663'], 'dealer_hand': ['A\u2660', '8\u2660'], 'player_hand_score': 17, 'dealer_hand_score': 19}
+INFO:__main__:{'player_hand': ['9\u2665', 'J\u2663'], 'dealer_hand': ['J\u2665', '4\u2660', '9\u2666'], 'player_hand_score': 19, 'dealer_hand_score': 23}
+INFO:__main__:Started poker
+ERROR:__main__:cannot access local variable 'cpu' where it is not associated with a value
+Traceback (most recent call last):
+  File "C:\Users\cgzho\OneDrive\Documents\GitHub\CardLineInterface\CardLineInterface.py", line 592, in <module>
+    poker().game_state()
+  File "C:\Users\cgzho\OneDrive\Documents\GitHub\CardLineInterface\CardLineInterface.py", line 379, in game_state
+    nelly = cpu()
+            ^^^
+UnboundLocalError: cannot access local variable 'cpu' where it is not associated with a value
+INFO:__main__:Started poker
+ERROR:__main__:cannot access local variable 'cpu' where it is not associated with a value
+Traceback (most recent call last):
+  File "C:\Users\cgzho\OneDrive\Documents\GitHub\CardLineInterface\CardLineInterface.py", line 591, in <module>
+    poker().game_state()
+  File "C:\Users\cgzho\OneDrive\Documents\GitHub\CardLineInterface\CardLineInterface.py", line 379, in game_state
+    nelly = cpu()
+            ^^^
+UnboundLocalError: cannot access local variable 'cpu' where it is not associated with a value
+INFO:__main__:Started poker
+ERROR:__main__:'poker' object has no attribute 'actor'
+Traceback (most recent call last):
+  File "C:\Users\cgzho\OneDrive\Documents\GitHub\CardLineInterface\CardLineInterface.py", line 591, in <module>
+    poker().game_state()
+  File "C:\Users\cgzho\OneDrive\Documents\GitHub\CardLineInterface\CardLineInterface.py", line 387, in game_state
+    game.deal_hand(cpu, 2)
+  File "C:\Users\cgzho\OneDrive\Documents\GitHub\CardLineInterface\CardLineInterface.py", line 512, in deal_hand
+    self.actor.append(card_temp)
+    ^^^^^^^^^^
+AttributeError: 'poker' object has no attribute 'actor'
+INFO:__main__:Started poker
+ERROR:__main__:'str' object has no attribute 'deal_hand'
+Traceback (most recent call last):
+  File "C:\Users\cgzho\OneDrive\Documents\GitHub\CardLineInterface\CardLineInterface.py", line 591, in <module>
+    poker().game_state()
+  File "C:\Users\cgzho\OneDrive\Documents\GitHub\CardLineInterface\CardLineInterface.py", line 387, in game_state
+    cpu.deal_hand('actor', 2)
+    ^^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'deal_hand'
+INFO:__main__:Started poker
+ERROR:__main__:'str' object cannot be interpreted as an integer
+Traceback (most recent call last):
+  File "C:\Users\cgzho\OneDrive\Documents\GitHub\CardLineInterface\CardLineInterface.py", line 594, in <module>
+    poker().game_state()
+  File "C:\Users\cgzho\OneDrive\Documents\GitHub\CardLineInterface\CardLineInterface.py", line 406, in game_state
+    game.deal_hand('player', 2)
+  File "C:\Users\cgzho\OneDrive\Documents\GitHub\CardLineInterface\CardLineInterface.py", line 503, in deal_hand
+    for card in range(numcards):
+                ^^^^^^^^^^^^^^^
+TypeError: 'str' object cannot be interpreted as an integer
+INFO:__main__:Started poker
+INFO:__main__:{'player_hand': ['J\u2666', 'T\u2663'], 'player_hand_score': 0}
+INFO:__main__:Started poker
+INFO:__main__:{'player_hand': ['T\u2660', 'K\u2660'], 'player_hand_score': 0}
+INFO:__main__:Started poker
+INFO:__main__:{'player_hand': ['J\u2663', '4\u2665'], 'player_hand_score': 0}
+INFO:__main__:{'player_hand': ['A\u2665', '5\u2666'], 'player_hand_score': 0}
+INFO:__main__:Started poker
+INFO:__main__:{'player_hand': ['5\u2665', '6\u2665'], 'player_hand_score': 0}
+INFO:__main__:{'player_hand': ['5\u2665', '4\u2663'], 'player_hand_score': 0}
+INFO:__main__:Started poker
+ERROR:__main__:division by zero
+Traceback (most recent call last):
+  File "C:\Users\cgzho\OneDrive\Documents\GitHub\CardLineInterface\CardLineInterface.py", line 550, in <module>
+    poker().game_state()
+  File "C:\Users\cgzho\OneDrive\Documents\GitHub\CardLineInterface\CardLineInterface.py", line 417, in game_state
+    1/0
+    ~^~
+ZeroDivisionError: division by zero

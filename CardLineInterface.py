@@ -16,8 +16,7 @@ class bank:
     """
     def __init__(self):
         self.bank_df = pd.DataFrame()
-
-        
+  
     def start_game(self):
         if os.path.exists('bank.csv') is False:
             print('construcing bank')
@@ -38,6 +37,26 @@ class bank:
         bank_df.loc[bank_df['username'] == username, f'{game} chip count'] = [chipcount]
         self.bank_df = bank_df
         self.bank_df.to_csv('bank.csv', index=False)
+
+class actor:
+    """Describes actors that are computer controlled opponents"""
+    def __init__(self, name):
+        """Initalize empty containers and standard values."""
+        self.hand = []
+        self.chip_count = 0
+        self.name = name
+
+    def logic(self, logic):
+        """Logical flows for decision making"""
+
+        if logic == "aggressive":
+            print("Aggressive")
+        elif logic == "defensive":
+            print("Defensive")
+        elif logic == "Random":
+            print("Random")
+        else:
+            print("Random")
 
 
 class blackjack:
@@ -204,9 +223,6 @@ class blackjack:
         else:
             print("See you around partner!")
 
-
-
-
     def deal_hand(self, actor, numcards):
         """Draws card from instance of game deck and inserts into actors hand, removing that card from being drawn in future."""
         for card in range(numcards):
@@ -223,7 +239,6 @@ class blackjack:
             elif actor == 'dealer':
                 self.dealer_hand.append(card_temp)
  
-
     def score_hand(self, actor, hand):
         """"Adds up value of cards in hand and adds value to named actor.
         Accounts of face cards having a value of 10.
@@ -285,15 +300,209 @@ class blackjack:
         if i >= finite:
             logger.info(f'Dealer max handsize reached')
 
+    def header_print(self):
+        """Pretty header to display at top of screen."""
+        print("*♣♣♣♣ ♦♦♦♦ ♥♥♥♥ ♠♠♠♠*")
+        print("CardLineInterface: Blackjack")
+        print("Dealer hits on 15")
+        print("*♣♣♣♣ ♦♦♦♦ ♥♥♥♥ ♠♠♠♠*")
+
+class poker:
+    """Texas Holdem Poker"""
+    def __init__(self):
+        """Initalize empty containers and standard values based on the game mode."""
+        self.player_hand = []
+        # ['Nelly', 'Smith', 'Ocean']
+        # self.nelly_hand = []
+        # self.smith_hand = []
+        # self.ocean_hand = []
+        # self.dealer_hand = []
+        # self.chip_count = []
+
+        self.player_hand_score = 0
+        # self.dealer_hand_score = 0
+
+        self.card_rank_dict = {
+            'A': 14,
+            'K': 13,
+            'Q': 12,
+            'J': 11,
+            'T': 10,
+        }
+
+        self.card_suite_dict = {
+            '♣': 4,
+            '♦': 3,
+            '♥': 2,
+            '♠': 1,
+        }
+
+        # self.handsize = 2
+
+        self.deck = ['A♣', '2♣', '3♣', '4♣', '5♣', '6♣', '7♣', '8♣', '9♣', 'T♣', 'J♣', 'Q♣', 'K♣', 'A♦', '2♦', '3♦', '4♦', '5♦', '6♦', '7♦', '8♦', '9♦', 'T♦', 'J♦', 'Q♦', 'K♦', 'A♥', '2♥', '3♥', '4♥', '5♥', '6♥', '7♥', '8♥', '9♥', 'T♥', 'J♥', 'Q♥', 'K♥', 'A♠', '2♠', '3♠', '4♠', '5♠', '6♠', '7♠', '8♠', '9♠', 'T♠', 'J♠', 'Q♠', 'K♠']
+
+        self.metadata = {
+            'player_hand':self.player_hand,
+            'player_hand_score':self.player_hand_score,
+        }
+
+    def metadata_update(self, update_key, update_value):
+        """"Utility function that updates key values for logging."""
+        keys = self.metadata.keys()
+        if update_key in keys:
+            self.metadata.update({update_key:update_value})
+        else:
+            self.metadata.add({update_key:update_value})
+
+    def game_state(self):
+        """Main game loop that generates an instance of the game.
+        
+        Hardcoded values:
+        username - Set to 'guest', multiple profiles in future implmentation.
+        bet - Set to 10, number of chips to wager should be dynamic in future, different levels/tables i.e. high roller, bigger bets?
+        finite - Used in while loops to prevent run away edgecases as per rule 2 in The Power of 10: Rules for Developing Safety-Critical Code.
+        i - Iteration counter.
+        """
+        game = poker()
+        bank_instance = bank()
+        bank_instance.start_game()
+
+        username = 'guest'
+
+        chipcount = bank_instance.bank_df.loc[bank_instance.bank_df['username'] == username, 'poker chip count'][0]
+        bet = 10
+
+        handsize = 2
+        
+        os.system('cls' if os.name == 'nt' else 'clear')
+        game.header_print()
+
+        nelly = actor(name = 'Nelly')
+        smith = actor(name = 'Smith')
+        ocean = actor(name = 'Ocean')
+
+        table = actor(name = 'Table')
+
+        cpu_players = [nelly, smith, ocean]
+        
+        cpu_players_print_str = ''
+        cpu_card_print_str = ''
+        for cpu in cpu_players:
+            game.deal_hand(hand = cpu.hand, numcards = handsize)
+    
+
+            cpu_players_print_str = cpu_players_print_str + cpu.name + '\t'
+            cpu_card_print_str = cpu_card_print_str + "[?? ??]" + '\t'
+
+        game.deal_hand(hand = game.player_hand, numcards = handsize)
+        game.metadata_update('player_hand',game.player_hand)
+        # flop
+        game.deal_hand(hand = table.hand, numcards = 3)
+
+        print(cpu_players_print_str)
+        print(cpu_card_print_str)
+        print('\n')
+        print('Flop: ')
+        print(table.hand)
+        print('\n')
+        print('Your Hand:')
+        print(game.player_hand)
+
+        proceed = input(f"Bet? ${bet} (y/n) ")
+
+        if proceed == "y":
+            game.deal_hand(hand = table.hand, numcards = 1)
+            os.system('cls' if os.name == 'nt' else 'clear')
+        else:
+            1/0
+
+        print(cpu_players_print_str)
+        print(cpu_card_print_str)
+        print('\n')
+        print('Flop: ')
+        print(table.hand)
+        print('\n')
+        print('Your Hand:')
+        print(game.player_hand)
+
+        proceed = input(f"Bet? ${bet} (y/n) ")
+
+        if proceed == "y":
+            game.deal_hand(hand = table.hand, numcards = 1)
+            os.system('cls' if os.name == 'nt' else 'clear')
+        else:
+            1/0
+
+        print(cpu_players_print_str)
+        print(cpu_card_print_str)
+        print('\n')
+        print('Flop: ')
+        print(table.hand)
+        print('\n')
+        print('Your Hand:')
+        print(game.player_hand)
+
+        bank_instance.updatechipcount(chipcount, username, game = 'poker', bank_df= bank_instance.bank_df)
+
+        logger.info(game.metadata)
+
+        play_again = input("Play another round? (y/n) ")
+
+        if play_again == "y":
+            try:
+                poker().game_state()
+            except Exception as e:
+                print(f'Casino is closed due to: \n {type(e).__name__} \n we apologize for any inconvenience')
+                logger.exception(e)
+        else:
+            print("See you around partner!")
+
+    def deal_hand(self, numcards, hand, actor = None):
+        """Draws card from instance of game deck and inserts into actors hand, removing that card from being drawn in future."""
+        for card in range(numcards):
+            card_temp = random.choice(self.deck)
+            index_temp = self.deck.index(card_temp)
+            if index_temp in range(len(self.deck)):
+                self.deck.remove(card_temp)
+            else:
+                print(card_temp)
+                print(self.deck.index(card_temp))
+
+            hand.append(card_temp)
 
     def header_print(self):
         """Pretty header to display at top of screen."""
         print("*♣♣♣♣ ♦♦♦♦ ♥♥♥♥ ♠♠♠♠*")
-        print("Casino: Blackjack")
-        print("Dealer hits on 15")
-        print("*♣♣♣♣ ♦♦♦♦ ♥♥♥♥ ♠♠♠♠*")
+        print("CardLineInterface: Texas Hold'em")
+        print("*♣♣♣♣ ♦♦♦♦ ♥♥♥♥ ♠♠♠♠*'\n'")
 
+    def score_hand(self, actor, hand):
+        """"Adds up value of cards in hand and adds value to named actor.
+        Accounts of face cards having a value of 10.
+        Accounts for Aces having a value of 11 or 1.
+        """
+        score = 0
+        ace_in_hand = False
+        for card in range(len(hand)):
+            # print(card)
+            rank = hand[card][0]
+            if rank == "A":
+                ace_in_hand = True
+            # print(rank)
 
+            if rank in self.card_rank_dict.keys():
+                rank_value = self.card_rank_dict[rank]
+                score = score + rank_value
+            else:
+                score = score + int(rank)
+            # print(score)
+        if score > 21 and ace_in_hand:
+            score = score - 10
+
+        if actor == 'player':
+            self.player_hand_score =  self.player_hand_score + score
+        elif actor == 'dealer':
+            self.dealer_hand_score =  self.dealer_hand_score + score
 
 if __name__ == "__main__":
     """Command line argument parser and logic to steer users to the right place."""
@@ -336,7 +545,12 @@ if __name__ == "__main__":
         
 
     elif mode == 'poker':
-        print("Under construction")
+        # print("Under construction")
+        try:
+            poker().game_state()
+        except Exception as e:
+            print(f'Casino is closed due to: \n {type(e).__name__} \n we apologize for any inconvenience')
+            logger.exception(e)
 
 
 
