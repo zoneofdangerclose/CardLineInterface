@@ -70,3 +70,5 @@ Traceback (most recent call last):
     1/0
     ~^~
 ZeroDivisionError: division by zero
+INFO:__main__:Started poker
+INFO:__main__:{'player_hand': ['T\u2665', '5\u2660'], 'player_hand_score': 0}

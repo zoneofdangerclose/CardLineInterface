@@ -4,6 +4,7 @@ from thefuzz import process
 import copy
 import os
 import pandas as pd
+import numpy as np
 import logging
 logger = logging.getLogger(__name__)
 from datetime import date
@@ -337,7 +338,6 @@ class poker:
             '♠': 1,
         }
 
-        # self.handsize = 2
 
         self.deck = ['A♣', '2♣', '3♣', '4♣', '5♣', '6♣', '7♣', '8♣', '9♣', 'T♣', 'J♣', 'Q♣', 'K♣', 'A♦', '2♦', '3♦', '4♦', '5♦', '6♦', '7♦', '8♦', '9♦', 'T♦', 'J♦', 'Q♦', 'K♦', 'A♥', '2♥', '3♥', '4♥', '5♥', '6♥', '7♥', '8♥', '9♥', 'T♥', 'J♥', 'Q♥', 'K♥', 'A♠', '2♠', '3♠', '4♠', '5♠', '6♠', '7♠', '8♠', '9♠', 'T♠', 'J♠', 'Q♠', 'K♠']
 
@@ -475,34 +475,37 @@ class poker:
         print("*♣♣♣♣ ♦♦♦♦ ♥♥♥♥ ♠♠♠♠*")
         print("CardLineInterface: Texas Hold'em")
         print("*♣♣♣♣ ♦♦♦♦ ♥♥♥♥ ♠♠♠♠*'\n'")
+        print('Still under construction!')
 
-    def score_hand(self, actor, hand):
+    def score_hand(self, hand, score):
         """"Adds up value of cards in hand and adds value to named actor.
-        Accounts of face cards having a value of 10.
-        Accounts for Aces having a value of 11 or 1.
         """
         score = 0
-        ace_in_hand = False
+        rank_list = []
+        suite_list = []
+
         for card in range(len(hand)):
-            # print(card)
             rank = hand[card][0]
-            if rank == "A":
-                ace_in_hand = True
-            # print(rank)
+            suite = hand[card][1]
 
-            if rank in self.card_rank_dict.keys():
-                rank_value = self.card_rank_dict[rank]
-                score = score + rank_value
-            else:
-                score = score + int(rank)
-            # print(score)
-        if score > 21 and ace_in_hand:
-            score = score - 10
+            rank_list.append(rank)
+            suite_list.append(suite)
+        
+        rank_list_unique = list(np.unique(rank_list))
 
-        if actor == 'player':
-            self.player_hand_score =  self.player_hand_score + score
-        elif actor == 'dealer':
-            self.dealer_hand_score =  self.dealer_hand_score + score
+        if len(rank_list) > len(rank_list_unique):
+            pass
+
+        club_count = suite_list.count('♣')
+        diamond_count = suite_list.count('♦')
+        heart_count = suite_list.count('♥')
+        spade_count = suite_list.count('♠')
+
+        suite_count = [club_count, diamond_count, heart_count, spade_count]
+
+        if max(suite_count) >= 5:
+            pass
+
 
 if __name__ == "__main__":
     """Command line argument parser and logic to steer users to the right place."""
@@ -520,7 +523,7 @@ if __name__ == "__main__":
 
     if args.game in gamemodes:
         mode = args.game
-    if args.game is None:
+    elif args.game is None:
         print(f'Game options are {gamemodes}')
     else:
         fuzzfind = process.extract(args.game, choices= gamemodes, limit=1)
