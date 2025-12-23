@@ -1,0 +1,84 @@
+INFO:__main__:Started poker
+ERROR:__main__:poker.score_hand() got an unexpected keyword argument 'score_actor'
+Traceback (most recent call last):
+  File "C:\Users\cgzho\OneDrive\Documents\GitHub\CardLineInterface\CardLineInterface.py", line 557, in <module>
+    poker().game_state()
+  File "C:\Users\cgzho\OneDrive\Documents\GitHub\CardLineInterface\CardLineInterface.py", line 440, in game_state
+    game.score_hand(hand = cpu.hand, score_actor = cpu.score)
+TypeError: poker.score_hand() got an unexpected keyword argument 'score_actor'
+INFO:__main__:Started poker
+INFO:__main__:{'player_hand': ['T\u2663', '5\u2665'], 'player_hand_score': 0}
+INFO:__main__:{'player_hand': ['2\u2663', '9\u2663'], 'player_hand_score': 0}
+INFO:__main__:Started poker
+INFO:__main__:{'player_hand': ['3\u2663', 'K\u2665'], 'player_hand_score': 0}
+INFO:__main__:Started poker
+INFO:__main__:{'player_hand': ['3\u2663', '6\u2660'], 'player_hand_score': []}
+INFO:__main__:Started poker
+ERROR:__main__:unsupported operand type(s) for +: 'int' and 'str'
+Traceback (most recent call last):
+  File "C:\Users\cgzho\OneDrive\Documents\GitHub\CardLineInterface\CardLineInterface.py", line 561, in <module>
+    poker().game_state()
+  File "C:\Users\cgzho\OneDrive\Documents\GitHub\CardLineInterface\CardLineInterface.py", line 440, in game_state
+    game.score_hand(hand = cpu_hand_final_temp, score_actor = cpu.score)
+  File "C:\Users\cgzho\OneDrive\Documents\GitHub\CardLineInterface\CardLineInterface.py", line 498, in score_hand
+    rank_sum = sum(rank_list)
+               ^^^^^^^^^^^^^^
+TypeError: unsupported operand type(s) for +: 'int' and 'str'
+INFO:__main__:Started poker
+ERROR:__main__:invalid literal for int() with base 10: 'J'
+Traceback (most recent call last):
+  File "C:\Users\cgzho\OneDrive\Documents\GitHub\CardLineInterface\CardLineInterface.py", line 561, in <module>
+    poker().game_state()
+  File "C:\Users\cgzho\OneDrive\Documents\GitHub\CardLineInterface\CardLineInterface.py", line 440, in game_state
+    game.score_hand(hand = cpu_hand_final_temp, score_actor = cpu.score)
+  File "C:\Users\cgzho\OneDrive\Documents\GitHub\CardLineInterface\CardLineInterface.py", line 490, in score_hand
+    rank = int(hand[card][0])
+           ^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: 'J'
+INFO:__main__:Started poker
+INFO:__main__:{'player_hand': ['Q\u2660', 'T\u2665'], 'player_hand_score': []}
+INFO:__main__:Started poker
+INFO:__main__:{'player_hand': ['6\u2660', '4\u2665'], 'player_hand_score': []}
+INFO:__main__:Started poker
+INFO:__main__:{'player_hand': ['5\u2663', '3\u2665'], 'player_hand_score': []}
+INFO:__main__:Started poker
+INFO:__main__:{'player_hand': ['T\u2660', 'Q\u2663'], 'player_hand_score': []}
+INFO:__main__:Started poker
+INFO:__main__:{'player_hand': ['6\u2665', 'J\u2665'], 'player_hand_score': []}
+INFO:__main__:Started poker
+INFO:__main__:{'player_hand': ['3\u2663', 'Q\u2660'], 'player_hand_score': []}
+INFO:__main__:Started poker
+ERROR:__main__:division by zero
+Traceback (most recent call last):
+  File "C:\Users\cgzho\OneDrive\Documents\GitHub\CardLineInterface\CardLineInterface.py", line 572, in <module>
+    poker().game_state()
+  File "C:\Users\cgzho\OneDrive\Documents\GitHub\CardLineInterface\CardLineInterface.py", line 410, in game_state
+    1/0
+    ~^~
+ZeroDivisionError: division by zero
+INFO:__main__:Started poker
+INFO:__main__:{'player_hand': ['6\u2663', 'J\u2663'], 'player_hand_score': []}
+INFO:__main__:Started poker
+INFO:__main__:{'player_hand': ['A\u2666', '2\u2660'], 'player_hand_score': []}
+INFO:__main__:Started poker
+INFO:__main__:{'player_hand': ['A\u2660', '7\u2660'], 'player_hand_score': []}
+INFO:__main__:Started poker
+INFO:__main__:{'player_hand': ['A\u2665', 'T\u2660'], 'player_hand_score': []}
+INFO:__main__:Started poker
+INFO:__main__:{'player_hand': ['Q\u2665', 'T\u2666'], 'player_hand_score': []}
+INFO:__main__:Started poker
+INFO:__main__:{'player_hand': ['3\u2660', 'A\u2663'], 'player_hand_score': []}
+INFO:__main__:{'player_hand': ['T\u2665', 'J\u2663'], 'player_hand_score': []}
+INFO:__main__:Started poker
+INFO:__main__:{'player_hand': ['4\u2663', '4\u2666'], 'player_hand_score': []}
+INFO:__main__:{'player_hand': ['7\u2660', '4\u2665'], 'player_hand_score': []}
+INFO:__main__:Started poker
+INFO:__main__:{'player_hand': ['7\u2660', 'T\u2665'], 'player_hand_score': []}
+INFO:__main__:Started poker
+INFO:__main__:{'player_hand': ['5\u2663', 'K\u2665'], 'player_hand_score': []}
+INFO:__main__:Started poker
+INFO:__main__:{'player_hand': ['5\u2663', 'Q\u2665', '6\u2660', '6\u2665', '5\u2660', '2\u2666', 'J\u2660', 'Q\u2666'], 'player_hand_score': ['Pair or better', [1, 2, 2, 1, 2]]}
+INFO:__main__:Started poker
+INFO:__main__:{'player_hand': ['K\u2663', '3\u2665', 'A\u2660', '7\u2663', 'K\u2666', '5\u2660', 'T\u2665', '2\u2665', 'T\u2660'], 'player_hand_score': ['Pair or better', [1, 1, 1, 1, 2, 2, 1]]}
+INFO:__main__:Started poker
+INFO:__main__:{'player_hand': ['J\u2660', '8\u2660', '3\u2663', '8\u2665', '3\u2665', 'K\u2660', '2\u2660', '6\u2660', 'Q\u2665'], 'player_hand_score': ['Pair or better', [1, 2, 1, 2, 1, 1, 1], 'Flush']}

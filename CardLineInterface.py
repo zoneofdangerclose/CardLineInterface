@@ -46,6 +46,7 @@ class actor:
         self.hand = []
         self.chip_count = 0
         self.name = name
+        self.score = []
 
     def logic(self, logic):
         """Logical flows for decision making"""
@@ -313,15 +314,8 @@ class poker:
     def __init__(self):
         """Initalize empty containers and standard values based on the game mode."""
         self.player_hand = []
-        # ['Nelly', 'Smith', 'Ocean']
-        # self.nelly_hand = []
-        # self.smith_hand = []
-        # self.ocean_hand = []
-        # self.dealer_hand = []
-        # self.chip_count = []
 
-        self.player_hand_score = 0
-        # self.dealer_hand_score = 0
+        self.player_hand_score = []
 
         self.card_rank_dict = {
             'A': 14,
@@ -338,7 +332,6 @@ class poker:
             '♠': 1,
         }
 
-
         self.deck = ['A♣', '2♣', '3♣', '4♣', '5♣', '6♣', '7♣', '8♣', '9♣', 'T♣', 'J♣', 'Q♣', 'K♣', 'A♦', '2♦', '3♦', '4♦', '5♦', '6♦', '7♦', '8♦', '9♦', 'T♦', 'J♦', 'Q♦', 'K♦', 'A♥', '2♥', '3♥', '4♥', '5♥', '6♥', '7♥', '8♥', '9♥', 'T♥', 'J♥', 'Q♥', 'K♥', 'A♠', '2♠', '3♠', '4♠', '5♠', '6♠', '7♠', '8♠', '9♠', 'T♠', 'J♠', 'Q♠', 'K♠']
 
         self.metadata = {
@@ -348,11 +341,9 @@ class poker:
 
     def metadata_update(self, update_key, update_value):
         """"Utility function that updates key values for logging."""
-        keys = self.metadata.keys()
-        if update_key in keys:
-            self.metadata.update({update_key:update_value})
-        else:
-            self.metadata.add({update_key:update_value})
+
+        self.metadata.update({update_key:update_value})
+
 
     def game_state(self):
         """Main game loop that generates an instance of the game.
@@ -375,7 +366,6 @@ class poker:
         handsize = 2
         
         os.system('cls' if os.name == 'nt' else 'clear')
-        game.header_print()
 
         nelly = actor(name = 'Nelly')
         smith = actor(name = 'Smith')
@@ -389,16 +379,39 @@ class poker:
         cpu_card_print_str = ''
         for cpu in cpu_players:
             game.deal_hand(hand = cpu.hand, numcards = handsize)
-    
-
+            game.metadata_update(update_key =f'{cpu.name}_hand', update_value =cpu.hand)
             cpu_players_print_str = cpu_players_print_str + cpu.name + '\t'
             cpu_card_print_str = cpu_card_print_str + "[?? ??]" + '\t'
 
         game.deal_hand(hand = game.player_hand, numcards = handsize)
+        game.metadata_update(update_key ='player_hand', update_value = game.player_hand)
         game.metadata_update('player_hand',game.player_hand)
+
+        game.metadata_update(update_key =f'{table.name}_hand', update_value =table.hand)
+        
+        game.header_print()
+        print(cpu_players_print_str)
+        print(cpu_card_print_str)
+        print('\n')
+        print('Preflop: ')
+        print(table.hand)
+        print('\n')
+        print('Your Hand:')
+        print(game.player_hand)
+
+        proceed = input(f"Bet? ${bet} (y/n) ")
+
+        if proceed == "y":
+            game.deal_hand(hand = table.hand, numcards = 1)
+            os.system('cls' if os.name == 'nt' else 'clear')
+        else:
+            1/0        
+        
         # flop
         game.deal_hand(hand = table.hand, numcards = 3)
+        game.metadata_update(update_key =f'{table.name}_hand', update_value =table.hand)
 
+        game.header_print()
         print(cpu_players_print_str)
         print(cpu_card_print_str)
         print('\n')
@@ -412,14 +425,16 @@ class poker:
 
         if proceed == "y":
             game.deal_hand(hand = table.hand, numcards = 1)
+            game.metadata_update(update_key =f'{table.name}_hand', update_value =table.hand)
             os.system('cls' if os.name == 'nt' else 'clear')
         else:
             1/0
 
+        game.header_print()
         print(cpu_players_print_str)
         print(cpu_card_print_str)
         print('\n')
-        print('Flop: ')
+        print('Turn: ')
         print(table.hand)
         print('\n')
         print('Your Hand:')
@@ -429,18 +444,42 @@ class poker:
 
         if proceed == "y":
             game.deal_hand(hand = table.hand, numcards = 1)
+            game.metadata_update(update_key =f'{table.name}_hand', update_value =table.hand)
             os.system('cls' if os.name == 'nt' else 'clear')
         else:
             1/0
 
+        game.header_print()
         print(cpu_players_print_str)
         print(cpu_card_print_str)
         print('\n')
-        print('Flop: ')
+        print('River: ')
         print(table.hand)
         print('\n')
         print('Your Hand:')
         print(game.player_hand)
+
+        proceed = input(f"Bet? ${bet} (y/n) ")
+
+        if proceed == "y":
+            game.deal_hand(hand = table.hand, numcards = 1)
+            game.metadata_update(update_key =f'{table.name}_hand', update_value =table.hand)
+            # os.system('cls' if os.name == 'nt' else 'clear')
+        else:
+            1/0
+
+        for cpu in cpu_players:
+            cpu_hand_final_temp = cpu.hand + table.hand
+            game.metadata_update(update_key =f'{cpu.name}_hand', update_value = cpu_hand_final_temp)
+            cpu.score = game.score_hand(hand = cpu_hand_final_temp, score_actor = cpu.score)
+            game.metadata_update(update_key =f'{cpu.name}_hand_score', update_value = cpu.score)
+            print(f'{cpu.name}: {cpu_hand_final_temp}, {cpu.score}')
+
+        player_hand_final = game.player_hand + table.hand
+        game.metadata_update(update_key ='player_hand', update_value =player_hand_final)
+        game.player_hand_score = game.score_hand(hand = player_hand_final, score_actor = game.player_hand_score)
+        game.metadata_update(update_key ='player_hand_score', update_value = game.player_hand_score)
+        print(f'{username}: {player_hand_final}, {game.player_hand_score}')
 
         bank_instance.updatechipcount(chipcount, username, game = 'poker', bank_df= bank_instance.bank_df)
 
@@ -474,27 +513,49 @@ class poker:
         """Pretty header to display at top of screen."""
         print("*♣♣♣♣ ♦♦♦♦ ♥♥♥♥ ♠♠♠♠*")
         print("CardLineInterface: Texas Hold'em")
-        print("*♣♣♣♣ ♦♦♦♦ ♥♥♥♥ ♠♠♠♠*'\n'")
+        print("*♣♣♣♣ ♦♦♦♦ ♥♥♥♥ ♠♠♠♠*")
         print('Still under construction!')
+        print('\n')
 
-    def score_hand(self, hand, score):
+    def score_hand(self, hand, score_actor):
         """"Adds up value of cards in hand and adds value to named actor.
         """
-        score = 0
+        score = []
         rank_list = []
         suite_list = []
 
         for card in range(len(hand)):
             rank = hand[card][0]
+            #check for face cards and converts them into numbers
+            if rank in self.card_rank_dict.keys():
+                rank = self.card_rank_dict[rank]
+            else:
+                rank = int(rank)
+
             suite = hand[card][1]
 
             rank_list.append(rank)
             suite_list.append(suite)
         
         rank_list_unique = list(np.unique(rank_list))
-
+        rank_multiples = []
         if len(rank_list) > len(rank_list_unique):
-            pass
+            score.append('Pair or better')
+            rank_len = len(rank_list)
+            rank_unique_len = len(rank_list_unique)
+            if rank_len > rank_unique_len+1:
+                for rank in rank_list_unique:
+                    rank_multiples.append(rank_list.count(rank))
+        
+        if rank_multiples:
+            if 2 in rank_multiples:
+                score.append("Pair")
+            if 3 in rank_multiples:
+                score.append("Three of a kind")
+            if 4 in rank_multiples:
+                score.append("Four of a kind")
+            if 2 in rank_multiples and 3 in rank_multiples:
+                score.append("Full house")
 
         club_count = suite_list.count('♣')
         diamond_count = suite_list.count('♦')
@@ -504,7 +565,14 @@ class poker:
         suite_count = [club_count, diamond_count, heart_count, spade_count]
 
         if max(suite_count) >= 5:
-            pass
+            score.append("Flush")
+        #TODO: account for ace low straights like Wheel (A, 2, 3, 4, 5)
+        for rank in rank_list:
+            rank_array_temp = list(range(rank,rank+5))
+            if set(rank_array_temp).issubset(rank_list):
+                score.append("Straight")
+
+        return score
 
 
 if __name__ == "__main__":
