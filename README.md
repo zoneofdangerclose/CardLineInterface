@@ -64,7 +64,3 @@ Hit? (y/n)
 - Currently only supports a single "guest" player
 - Fixed betting amount (10 chips per round)
 - Dealer follows Las Vegas rules (must hit on 15)
-
----
-
-**Have fun and gamble responsibly!** 🎲
