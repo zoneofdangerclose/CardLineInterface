@@ -46,7 +46,7 @@ class actor:
         self.hand = []
         self.chip_count = 0
         self.name = name
-        self.score = []
+        self.score = {}
 
     def logic(self, logic):
         """Logical flows for decision making"""
@@ -315,7 +315,7 @@ class poker:
         """Initalize empty containers and standard values based on the game mode."""
         self.player_hand = []
 
-        self.player_hand_score = []
+        self.player_hand_score = {}
 
         self.card_rank_dict = {
             'A': 14,
@@ -402,14 +402,11 @@ class poker:
         proceed = input(f"Bet? ${bet} (y/n) ")
 
         if proceed == "y":
-            game.deal_hand(hand = table.hand, numcards = 1)
+            game.deal_hand(hand = table.hand, numcards = 3)
+            game.metadata_update(update_key =f'{table.name}_hand', update_value =table.hand)
             os.system('cls' if os.name == 'nt' else 'clear')
         else:
             1/0        
-        
-        # flop
-        game.deal_hand(hand = table.hand, numcards = 3)
-        game.metadata_update(update_key =f'{table.name}_hand', update_value =table.hand)
 
         game.header_print()
         print(cpu_players_print_str)
@@ -520,7 +517,7 @@ class poker:
     def score_hand(self, hand, score_actor):
         """"Adds up value of cards in hand and adds value to named actor.
         """
-        score = []
+        score = {}
         rank_list = []
         suite_list = []
 
@@ -536,26 +533,33 @@ class poker:
 
             rank_list.append(rank)
             suite_list.append(suite)
+        #dict{tier of cards: [value of tier]
+        score.update({'High Card':[10]})
         
         rank_list_unique = list(np.unique(rank_list))
         rank_multiples = []
         if len(rank_list) > len(rank_list_unique):
-            score.append('Pair or better')
-            rank_len = len(rank_list)
-            rank_unique_len = len(rank_list_unique)
-            if rank_len > rank_unique_len+1:
-                for rank in rank_list_unique:
-                    rank_multiples.append(rank_list.count(rank))
+            for rank in rank_list_unique:
+                rank_multiples.append(rank_list.count(rank))
         
         if rank_multiples:
+            score.update({"rank_multiples":rank_multiples})
             if 2 in rank_multiples:
-                score.append("Pair")
+                score.update({"Single Pair":[9]})
+                # score.append("Pair")
+                rank_multiples_temp = rank_multiples
+                rank_multiples_temp.remove(2)
+                if 2 in rank_multiples_temp:
+                    score.update({"Double Pair":[8]})
             if 3 in rank_multiples:
-                score.append("Three of a kind")
+                # score.append("Three of a kind")
+                score.update({"Three of a kind":[7]})
             if 4 in rank_multiples:
-                score.append("Four of a kind")
+                # score.append("Four of a kind")
+                score.update({"Four of a kind":[3]})
             if 2 in rank_multiples and 3 in rank_multiples:
-                score.append("Full house")
+                # score.append("Full house")
+                score.update({"Full house":[4]})
 
         club_count = suite_list.count('♣')
         diamond_count = suite_list.count('♦')
@@ -565,12 +569,38 @@ class poker:
         suite_count = [club_count, diamond_count, heart_count, spade_count]
 
         if max(suite_count) >= 5:
-            score.append("Flush")
+            # score.append("Flush")
+            score.update({"Flush":[5]})
         #TODO: account for ace low straights like Wheel (A, 2, 3, 4, 5)
         for rank in rank_list:
             rank_array_temp = list(range(rank,rank+5))
             if set(rank_array_temp).issubset(rank_list):
-                score.append("Straight")
+                # score.append("Straight")
+                score.update({"Straight":[6]})
+                if "Flush" in score.keys():
+                    suite_list_temp = []
+                    for rank in rank_array_temp:
+                        hand_index = hand.find(str(rank))
+                        if hand_index > -1:
+                            suite_list_temp.append(hand[hand_index][1])
+
+                    club_count = suite_list_temp.count('♣')
+                    diamond_count = suite_list_temp.count('♦')
+                    heart_count = suite_list_temp.count('♥')
+                    spade_count = suite_list_temp.count('♠')
+
+                    if max(suite_count) >= 5:
+                        # score.append("Flush")
+                        score.update({"Straight flush":[2]})
+                        
+
+        if "Straight flush" in score.keys():
+
+            royal_flush_list = [['T♣', 'J♣', 'Q♣', 'K♣', 'A♣'], ['T♦', 'J♦', 'Q♦', 'K♦', 'A♦'], ['T♥', 'J♥', 'Q♥', 'K♥', 'A♥'], ['T♠', 'J♠', 'Q♠', 'K♠', 'A♠']]
+
+            for royal_flush in royal_flush_list:
+                if  set(royal_flush).issubset(hand):
+                    score.update({"Royal flush": [1]})
 
         return score
 
@@ -622,8 +652,3 @@ if __name__ == "__main__":
         except Exception as e:
             print(f'Casino is closed due to: \n {type(e).__name__} \n we apologize for any inconvenience')
             logger.exception(e)
-
-
-
-
-
